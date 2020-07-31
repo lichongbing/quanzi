@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/themes/admin/lib/layui/css/layui.css">
+    <script src="/themes/admin/lib/layui/layui.js"></script>
+</head>
+<body>
+<script>
+    (function(){
+
+        layui.use('layer', function(){
+            var layer = layui.layer;
+            layer.msg('<?php echo(strip_tags($msg));?>');
+        });
+
+        var wait = "<?php echo($wait);?>",
+            href = "<?php echo($url);?>";
+
+        setTimeout(function () {
+            location.href = href;
+        },wait*1000)
+    })();
+</script>
+</body>
+</html>

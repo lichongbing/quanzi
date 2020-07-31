@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <title>添加商品</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/themes/admin/css/font.css">
+    <link rel="stylesheet" href="/themes/admin/css/xadmin.css">
+    <style type="text/css">
+        .toolbar {
+            border: 1px solid #ccc;
+        }
+        .text {
+            border: 1px solid #ccc;
+            min-height: 200px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small layui-btn-normal" href="/admin/shop/goods" style="float:right;margin-top: 4px"  title="返回">返回商品列表</a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">标题</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="{$goodsDetail.title}" id="goods-title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">价格</label>
+                            <div class="layui-input-block">
+                                <input type="number" value="{$goodsDetail.price}" id="goods-price" required  lay-verify="required" placeholder="请输入价格" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">资源链接</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="{$goodsDetail.download_url}" id="download_url" required  lay-verify="required" placeholder="请输入资源链接" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">商品说明</label>
+                            <div class="layui-input-block">
+                                <div id="toolbar" class="toolbar">
+                                </div>
+                                <div style="padding: 5px 0; color: #ccc"></div>
+                                <div id="editor" class="text"></div>
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">*</div>
+                        </div>
+                        <div class="layui-form-item" style="position: absolute;z-index: 9999999;bottom: 100px">
+                            <label class="layui-form-label">商品分类</label>
+                            <div class="layui-input-inline">
+                                <select id="goods-cate" lay-verify="required">
+                                    <option value=""></option>
+                                    {volist name="category" id="vo"}
+                                    <option value="{$vo.id}">{$vo.cate_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">显示状态</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" id="goods-status" lay-skin="switch" lay-text="正常|禁用">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button type="button" class="layui-btn" onclick="postAdd()">提交</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/wangeditor@3.1.1/release/wangEditor.min.js"></script>
+<script src="/themes/admin/lib/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="/themes/admin/js/xadmin.js"></script>
+<script>
+    var E = window.wangEditor
+    var editor = new E('#toolbar', '#editor')
+    editor.customConfig.uploadFileName = 'Image[]'
+    editor.customConfig.uploadImgServer = '/admin/index/upload'
+    // 将图片大小限制为 3M
+    editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024
+    // 限制一次最多上传 9 张图片
+    editor.customConfig.uploadImgMaxLength = 9
+    editor.customConfig.uploadImgHooks = {
+        customInsert: function (insertImg, result, editor) {
+            var urls = result.url
+            $.each(urls,function (index,url) {
+                insertImg("/" +url)
+            })
+        }
+
+    }
+    editor.create()
+    layui.use(['form','layer'],function () {
+        //初始化内容
+        editor.txt.html('{$goodsDetail.introduce|raw}');
+        var form = layui.form;
+        var cateId = "{$goodsDetail.cate_id|default=''}";
+
+        if (cateId != ""){
+            var select = 'dd[lay-value=' + cateId + ']';
+            $("#goods-cate").siblings("div.layui-form-select").find('dl').find(select).click();
+        }
+
+        if ("{$goodsDetail.status}" == 0){
+            $("#goods-status").attr("checked", "checked");
+        }else if ("{$goodsDetail.status}" == 1) {
+            $("#goods-status").removeAttr("checked");
+        }
+        form.render();
+    });
+
+    function postAdd(){
+        const goodsTitle = $("#goods-title").val();
+        const goodsPrice = $("#goods-price").val();
+        const goodsURL = $("#download_url").val();
+        const goodsContent = editor.txt.html();
+        const goodsCate = $("#goods-cate").val();
+        var goodsStatus = 1;
+
+        if ($('#goods-status').is(':checked')) {
+            goodsStatus = 0;
+        }
+        var postData = {"title":goodsTitle,"download_url":goodsURL,"price":goodsPrice,"introduce":goodsContent,"cate_id":goodsCate,"status":goodsStatus,"id":"{$Request.get.id}"};
+
+        $.ajax({
+            type:"POST",
+            data:postData,
+            url:"/admin/shop/goodsAdd",
+            success:function (e) {
+                if (e.code == 1){
+                    layer.msg(e.msg,{"icon":1})
+                    setTimeout(function () {
+                        location.href = "/admin/shop/goods";
+                    },1500)
+                }else {
+                    layer.msg(e.msg,{"icon":2})
+                }
+            }
+        })
+
+
+    }
+
+</script>
+</html>

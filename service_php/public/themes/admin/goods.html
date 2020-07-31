@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/themes/admin/css/font.css">
+    <link rel="stylesheet" href="/themes/admin/css/xadmin.css">
+    <link rel="stylesheet" href="/themes/admin/css/common.css">
+    <script src="/themes/admin/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/themes/admin/js/xadmin.js"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <a class="layui-btn" href="/admin/shop/goodsAdd"><i class="layui-icon"></i>添加商品</a>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th>商品ID</th>
+                            <th>封面</th>
+                            <th>商品名称</th>
+                            <th>价格</th>
+                            <th>分类</th>
+                            <th>状态</th>
+                            <th>创建时间</th>
+                            <th>管理</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="goodList" id="vo"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td><img style="width: 100px;height: 100px;" src="{$vo.image_cover|default='/themes/default/static/images/default/goods-cover.jpg'}"></td>
+                            <td>{$vo.title}</td>
+                            <td>{$vo.price}</td>
+                            <td>{$vo.cate_name}</td>
+                            <td>
+                                <input type="checkbox" name="switch" value="{$vo.id}" lay-filter="switchGoodsStatus" lay-skin="switch" lay-text="正常|禁用" <?php if($vo['status'] == 0)  { echo 'checked'; } ?> >
+                            </td>
+                            <td>{$vo.create_time}</td>
+                            <td>
+                                <a href="/admin/shop/goodsAdd?id={$vo.id}" class="layui-btn layui-btn-normal">编辑</a>
+                                <button onclick="delOrder('{$vo.id}',this)" class="layui-btn layui-btn-danger">删除</button>
+                                <button  class="layui-btn layui-btn-normal" onclick="pushBaiDu({$vo.id})">推送百度</button>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$goodList|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['form'], function(){
+        var  form = layui.form;
+
+        //监听商品状态开关
+        form.on('switch', function(obj){
+            if (obj.elem.checked == true){
+                var status = 0;
+            }else if (obj.elem.checked == false){
+                var status = 1;
+            }
+            var id = obj.elem.attributes.value.value;
+            $.ajax({
+                type:"POST",
+                data:{
+                    id:id,
+                    status:status
+                },
+                url:"/admin/shop/goodsStatus",
+                success:function (e) {
+                    layer.msg(e.msg)
+                }
+            })
+            form.render();
+        });
+    });
+    //提交百度收录
+    function pushBaiDu(id) {
+        var domain = location.host;
+        var URL;
+        var Cts = location.href;
+        if(Cts.indexOf("https") >= 0 ) {
+            URL = "https://" + domain + "/shop/goods-" +id+".html"
+        }else{
+            URL = "http://" + domain + "/shop/goods-" +id+".html"
+        }
+        $.ajax({
+            type:"POST",
+            data:{
+                url:URL
+            },
+            url:"/home/seo/pushBaiDu",
+            success:function (e) {
+                if (e.success > 0){
+                    layer.msg("成功将："+URL+"提交百度收录，"+"当天可推送剩余：" +e.remain,{icon:1})
+                }else if (e.code == 0){
+                    layer.msg(e.msg,{icon:2})
+                } else {
+                    layer.msg(e.success,{icon:2})
+                }
+            }
+        })
+    }
+    //删除商品
+    function delOrder(orderId,obj) {
+        layer.msg('确定删除该商品？', {
+            time: 0
+            ,btn: ['删除', '取消']
+            ,yes: function(index){
+                $.ajax({
+                    type:"POST",
+                    data:{
+                        id:orderId
+                    },
+                    url:"/admin/shop/delGoods",
+                    success:function (e) {
+                        if (e.code == 1){
+                            layer.msg(e.msg,{icon:1})
+                            location.reload();
+                        }else {
+                            layer.msg(e.msg,{icon:2})
+                        }
+                    }
+                })
+            }
+        });
+    }
+</script>
+</html>

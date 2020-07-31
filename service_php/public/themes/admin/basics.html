@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/themes/admin/css/font.css">
+    <link rel="stylesheet" href="/themes/admin/css/xadmin.css">
+</head>
+<body>
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li>上传配置</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <!--上传配置开始-->
+                            <div class="layui-tab-item layui-show">
+                                <form class="layui-form" action="">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">上传方式</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="uploadType" value="1" title="本地服务器" {eq name="uploadType.value" value="1"}checked{/eq} >
+                                            <input type="radio" name="uploadType" value="2" title="阿里云OSS" {eq name="uploadType.value" value="2"}checked{/eq} >
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">阿里云Oss地址</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="OssAddress" required value="{$uploadType.extend.endpoint}"  lay-verify="required" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">存储空间名称</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="OssName" required value="{$uploadType.extend.OssName}"  lay-verify="required" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">阿里云KeyId</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="keyId" required value="{$uploadType.extend.accessKeyId}"  lay-verify="required" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">阿里云KeySecret</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="keySecret" required value="{$uploadType.extend.accessKeySecret}"  lay-verify="required" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <button class="layui-btn" lay-submit lay-filter="uploadType">保存</button>
+                                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <!--上传配置结束-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/themes/admin/lib/layui/layui.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="/themes/admin/js/xadmin.js"></script>
+<script>
+    layui.use('element');
+    layui.use('layer');
+    layui.use('form');
+
+    layui.use('form', function(){
+        var form = layui.form;
+
+        form.on('submit(uploadType)', function(data){
+            var data = data.field;
+
+            $.ajax({
+                type:"POST",
+                data:data,
+                url:"/admin/system/uploadType",
+                success:function(e){
+                    if(e.code == 1){
+                        layer.msg(e.msg,{icon:1});
+                    }else{
+                        layer.msg(e.msg);
+                    }
+                }
+            });
+            return false;
+
+        });
+    });
+</script>
+</body>
+</html>

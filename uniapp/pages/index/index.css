@@ -1,0 +1,112 @@
+page {
+	background-color: #f5f5f5;
+}
+
+.status-box {
+	background-color: #fff;
+	position: fixed;
+	top: 0;
+	z-index: 999;
+	width: 100%;
+}
+
+.head {
+	background-color: #fff;
+	position: fixed;
+	width: 100%;
+	z-index: 999;
+}
+
+.tab-box {
+	width: 30%;
+}
+
+.rec-topic {
+	overflow: hidden;
+	background-color: #fff;
+	margin: 10rpx 0;
+}
+
+.block-title {
+	display: inline-block;
+	font-size: 14px;
+	font-weight: bold;
+	margin: 20rpx;
+	padding: 10rpx 0;
+	line-height: 14px;
+	border-bottom: 2px solid #ee0a24;
+	color: #616161;
+}
+
+.rec-topic-item {
+	width: 21%;
+	height: 170rpx;
+	float: left;
+	margin: 2%;
+	text-align: center;
+	font-size: 12px;
+}
+
+.rec-topic-item image {
+	width: 120rpx;
+	height: 120rpx;
+	border-radius: 50%;
+	display: block;
+	margin: 0 auto;
+}
+
+.rec-topic-item-name {
+	margin: 15rpx;
+}
+
+/* 最近访问 */
+
+.zjfw {
+	display: flex;
+	align-items: center;
+}
+
+.zjfw .iconfont {
+	margin-left: auto;
+	margin-right: 40rpx;
+	color: #999;
+}
+
+.topic-list {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 20rpx;
+	border-bottom: 1px solid #f5f5f5;
+}
+
+.topic-list navigator {
+	width: 110rpx;
+	height: 110rpx;
+	margin-right: 20rpx;
+	margin-bottom: 20rpx;
+	border-radius: 10rpx;
+	overflow: hidden;
+}
+
+.topic-list navigator image {
+	width: 100%;
+	height: 100%;
+}
+
+
+.my-topic {
+	padding: 20rpx;
+	background-color: #fff;
+}
+
+.my-topic .title {
+	font-size: 16px;
+	margin: 20rpx 0;
+}
+
+/*关注更多圈子*/
+.more-topic {
+	padding: 20rpx;
+	text-align: center;
+	color: #2B85E4;
+}

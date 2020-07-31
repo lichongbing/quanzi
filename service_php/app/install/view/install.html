@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>云喵圈子-安装程序</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<style>
+    body{background: #F5F5F5;}
+    #app{width: 1180px;height: auto;margin: 0 auto;padding: 10px;background: #fff;}
+    .main{width: 100%;margin-top: 50px;}
+</style>
+<body>
+<div id="app">
+    <el-steps :active="active" finish-status="success">
+        <el-step title="用户协议"></el-step>
+        <el-step title="环境检测"></el-step>
+        <el-step title="创建账户"></el-step>
+        <el-step title="安装完成"></el-step>
+    </el-steps>
+
+    <!--用户协议开始-->
+    <div class="main" :active="active" v-if="active === 0">
+        <p style="line-height: 2em">
+            版权所有 (c) 2019~2020，云喵圈子保留所有权利。</br></br>
+            感谢您选择云喵圈子。希望我们的努力能为您提供一个简单.快速、高效.稳定的建站解决方案。</br>
+            云喵圈子官方网址为 http://www.tn721.cn,更多产品说明请访问官网。</br></br>
+            用户须知：本协议是您与云喵圈子之间关于您使用云喵圈子提供的各种软件产品及服务的法律协议。无论您是个人或组织、盈利与否、用途如何（包括以学习和研究为目的），均需仔细阅读本协议，包括免除或者限制云喵圈子责任的免责条款及对您的
+            权利限制。请您审阅并接受或不接受本服务条款。如您不同意本服务条款，您应不使用或主动取消云喵圈子提供的相关产品。否则，您的任何对云喵圈子产品中的相关服务的注册、登陆、下载、查看等使用行为将被视为您对本服务条款全部的完全接受，包括接受云喵圈子对服务条款随时所做的任何修改。</br></br>
+            本服务条款一旦发生变更, 云喵圈子将在网页上公布修改内容。修改后的服务条款一旦在网站管理后台上公布即有效代替原来的服
+            务条款。您可随时登陆云喵圈子官方网站查阅最新版服务条款。如果您选择接受本条款，即表示您同意接受协议各项条件的约束。
+            如果您不同意本服务条款，则不能获得使用本服务的权利。您若有违反本条款规定，云喵圈子有权随时中止或终止您对云喵圈子产品的使用资格并保留追究相关法律责任的权利。</br></br>
+            在理解、同意、并遵守本协议的全部条款后，方可开始使用云喵圈子产品。您可能与云喵圈子公司直接签订另一书面协议，以补充
+            或者取代本协议的全部或者任何部分云喵圈子拥有云喵圈子的全部知识产权。本软件只供许可协议，并非出售。云喵圈子只允许您
+            在遵守本协议各项条款的情况下复制、下载、安装、使用或者以其他方式受益于本软件的功能或者知识产权。</br></br>
+            I. 协议许可的权利 </br></br>
+            您可以在完全遵守本许可协议的基础上，将本软件应用于商业用途，而不必支付软件版权许可费用。</br>
+            您可以在协议规定的约束和限制范围内修改云喵圈子产品源代码(如果被提供的话)或界面风格以适应您的网站要求，但必须保留软件版本信息的正常显示及相关连接正常。</br>
+            您拥有使用本软件构建的网站中全部会员资料、文章及相关信息的所有权，并独立承担与使用本软件构建的网站内容的
+            审核、注意义务，确保其不侵犯任何人的合法权益，独立承担因使用云喵圈子软件和服务带来的全部责任，若造成云喵圈子或
+            用户损失的，您应予以全部赔偿。 </br>
+            您可以从云喵圈子提供的应用市场服务中下载适合您网站的应用程序或页面模板，但应向应用程序开发者/所有者支付相应的费用。</br></br>
+            II. 协议规定的约束和限制 </br></br>
+            禁止去除云喵圈子源码里的版权信息，商业授权版本可去除后台界面及前台界面的相关版权信息。</br>
+            禁止在云喵圈子整体或任何部分基础上发展任何派生版本、修改版本或第三方版本用于重新分发。</br></br>
+        </p>
+    </div>
+    <!--用户协议结束-->
+    <!--环境检测开始-->
+    <div class="main" :active="active" v-else-if="active === 1">
+        <template>
+            <el-table
+                    :data="tableData"
+                    style="width: 100%">
+                <el-table-column
+                        prop="date"
+                        label="环境名称"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="当前环境"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="address"
+                        label="所需环境">
+                </el-table-column>
+            </el-table>
+        </template>
+    </div>
+    <!--环境检测结束-->
+    <!--创建账户开始-->
+    <div class="main" :active="active" v-else-if="active === 2">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
+            <el-form-item label="数据库账号" prop="db_user_name">
+                <el-input v-model="ruleForm.db_user_name"></el-input>
+            </el-form-item>
+            <el-form-item label="数据库密码" prop="db_user_pwd">
+                <el-input v-model="ruleForm.db_user_pwd"></el-input>
+            </el-form-item>
+            <el-form-item label="数据库名" prop="db_name">
+                <el-input v-model="ruleForm.db_name"></el-input>
+            </el-form-item>
+            <el-form-item label="数据库表前缀" prop="db_prefix">
+                <el-input v-model="ruleForm.db_prefix"></el-input>
+            </el-form-item>
+            <el-form-item label="创始人账号/邮箱" prop="username">
+                <el-input v-model="ruleForm.username"></el-input>
+            </el-form-item>
+            <el-form-item label="创始人密码" prop="password">
+                <el-input type="password" v-model="ruleForm.password"></el-input>
+            </el-form-item>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="isLoading">立即创建</el-button>
+                <el-button @click="resetForm('ruleForm')">重置</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+    <!--创建账户结束-->
+    <!--安装完成开始-->
+    <div class="main" :active="active" v-else-if="active === 3">
+        <el-link type="primary"  href="/admin/user/login"><h3>访问管理后台</h3></el-link>
+    </div>
+    <!--安装完成结束-->
+
+    <el-button style="margin-top: 12px;" v-if="active > 0 && active < 3 " @click="prev">上一步</el-button>
+    <el-button style="margin-top: 12px;" @click="next" v-if="active < 2">{{btnNext}}</el-button>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: function() {
+            return {
+                active: 0,
+                btnNext:"同意协议",
+                isLoading:false,
+                phpVersion:"{php}echo phpversion(){/php}",
+                tableData: [{
+                    date: '系统环境',
+                    name: '{php}echo PHP_OS{/php}',
+                    address: '—'
+                }, {
+                    date: 'MySQL版本',
+                    name: 'MySQL5.6',
+                    address: '—'
+                }, {
+                    date: 'PHP版本',
+                    name: '{php}echo phpversion(){/php}',
+                    address: 'PHP版本大于7.1'
+                }],
+                ruleForm: {
+                    db_user_name: '',
+                    db_user_pwd: '',
+                    db_name: '',
+                    db_prefix: 'tn_',
+                    username: '',
+                    password: ''
+                },
+                rules: {
+                    db_user_name: [
+                        { required: true, message: '请输入数据库账号', trigger: 'blur' }
+                    ],
+                    db_user_pwd: [
+                        { required: true, message: '请输入数据库密码', trigger: 'blur' }
+                    ],
+                    db_name: [
+                        { required: true, message: '请输入数据库名', trigger: 'blur' }
+                    ],
+                    db_prefix: [
+                        { required: true, message: '请输入数据库表前缀', trigger: 'blur' }
+                    ],
+                    username: [
+                        { required: true, message: '请输入创始人账号', trigger: 'blur' },
+                        { min: 6, max: 32, message: '长度在 6 到 32 个字符', trigger: 'blur' }
+                    ],
+                    password: [
+                        { required: true, message: '请输入创始人密码', trigger: 'blur' },
+                        { min: 6, max: 32, message: '长度在 6 到 32 个字符', trigger: 'blur' }
+                    ],
+                }
+            };
+        },
+        methods: {
+            next() {
+                this.btnNext = "下一步";
+                if (this.active === 1){
+                    this.phpVersion = this.phpVersion.replace(/[^0-9]/ig,"");
+                  if (this.phpVersion < 710){
+                      this.$message.error('PHP版本过低，请升级版本');
+                      return;
+                  }
+                }
+
+                if (this.active === 3){
+                    return;
+                }
+                this.active++
+            },
+            prev(){
+                this.active--
+
+                if (this.active <= 0){
+                    this.active = 0;
+                    this.btnNext = "同意协议";
+                    return;
+                }
+            },
+            submitForm(formName) {
+                var self = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        self.isLoading = true;
+                        axios.post('/Index/dbInstall', this.ruleForm)
+                            .then(function (response) {
+                                if (response.data.code == 1){
+                                    self.active++;
+                                    self.$message.success("安装成功");
+                                }else {
+                                    self.isLoading = false;
+                                    self.$message.error(response.data.msg);
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            }
+        }
+    })
+</script>
+</html>
